@@ -1,0 +1,522 @@
+/* ==========================================================================
+   SMP NEGERI 1 SEGAH - Portal & Dashboard Stylesheet
+   For: Admin, Guru, Siswa
+   ========================================================================== */
+
+:root {
+  --portal-sidebar-width: 260px;
+  --portal-header-height: 70px;
+  --portal-primary: #1e3a8a;
+  --portal-primary-hover: #1d4ed8;
+  --portal-bg: #f1f5f9;
+  --portal-card-bg: #ffffff;
+  --portal-text: #1e293b;
+  --portal-muted: #64748b;
+  --portal-border: #e2e8f0;
+  --portal-success: #10b981;
+  --portal-warning: #f59e0b;
+  --portal-danger: #ef4444;
+  --portal-info: #06b6d4;
+  --portal-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  --portal-radius: 12px;
+}
+
+body.portal-body {
+  background-color: var(--portal-bg);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: var(--portal-text);
+  overflow-x: hidden;
+}
+
+/* ================= LAYOUT ================= */
+.portal-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* SIDEBAR */
+.portal-sidebar {
+  width: var(--portal-sidebar-width);
+  background: #0f172a;
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  transition: all 0.3s ease;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.portal-sidebar-brand {
+  height: var(--portal-header-height);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.portal-brand-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #ffffff;
+  object-fit: contain;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.portal-brand-text {
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+}
+
+.portal-brand-text small {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #38bdf8;
+  display: block;
+}
+
+.sidebar-nav {
+  padding: 16px 12px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.nav-category {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 1px;
+  padding: 12px 14px 6px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.885rem;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar-link i {
+  font-size: 1.15rem;
+  color: #64748b;
+  transition: all 0.2s ease;
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.sidebar-link:hover i {
+  color: #38bdf8;
+}
+
+.sidebar-link.active {
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.9) 0%, rgba(30, 58, 138, 0.9) 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.sidebar-link.active i {
+  color: #ffffff;
+}
+
+.portal-sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.user-quick-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-quick-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #3b82f6;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.user-quick-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.user-quick-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: white;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.user-quick-role {
+  font-size: 0.72rem;
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+/* MAIN CONTENT AREA */
+.portal-main {
+  flex: 1;
+  margin-left: var(--portal-sidebar-width);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+/* TOP HEADER */
+.portal-header {
+  height: var(--portal-header-height);
+  background: #ffffff;
+  border-bottom: 1px solid var(--portal-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.btn-sidebar-toggle {
+  background: transparent;
+  border: 1px solid var(--portal-border);
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--portal-text);
+  font-size: 1.1rem;
+}
+
+.portal-header-search {
+  position: relative;
+  width: 320px;
+}
+
+.portal-header-search input {
+  width: 100%;
+  padding: 8px 16px 8px 38px;
+  font-size: 0.875rem;
+  background: #f8fafc;
+  border: 1px solid var(--portal-border);
+  border-radius: 9999px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.portal-header-search input:focus {
+  background: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.portal-header-search i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+}
+
+.portal-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.badge-role {
+  padding: 5px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.badge-role-admin {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.badge-role-guru {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badge-role-siswa {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* PORTAL BODY CONTAINER */
+.portal-content {
+  padding: 28px;
+  flex: 1;
+}
+
+/* PAGE HEADER */
+.page-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.page-subtitle {
+  font-size: 0.875rem;
+  color: var(--portal-muted);
+}
+
+/* ================= STAT CARDS ================= */
+.stat-card {
+  background: var(--portal-card-bg);
+  border: 1px solid var(--portal-border);
+  border-radius: var(--portal-radius);
+  padding: 22px;
+  box-shadow: var(--portal-shadow);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.08);
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--portal-muted);
+  margin-top: 4px;
+}
+
+/* ================= CARDS & BOXES ================= */
+.portal-card {
+  background: var(--portal-card-bg);
+  border: 1px solid var(--portal-border);
+  border-radius: var(--portal-radius);
+  box-shadow: var(--portal-shadow);
+  margin-bottom: 24px;
+}
+
+.portal-card-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--portal-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-top-left-radius: var(--portal-radius);
+  border-top-right-radius: var(--portal-radius);
+}
+
+.portal-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.portal-card-body {
+  padding: 22px;
+}
+
+/* ================= TABLES ================= */
+.table-portal {
+  width: 100%;
+  margin-bottom: 0;
+  vertical-align: middle;
+}
+
+.table-portal thead th {
+  background: #f8fafc;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--portal-border);
+}
+
+.table-portal tbody td {
+  padding: 14px 16px;
+  font-size: 0.875rem;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.table-portal tbody tr:hover td {
+  background-color: #f8fafc;
+}
+
+/* ================= STUDENT DIGITAL ID CARD ================= */
+.student-id-card {
+  background: linear-gradient(135deg, #0f2b5c 0%, #1e3a8a 60%, #0d9488 100%);
+  color: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 12px 32px rgba(15, 43, 92, 0.25);
+  position: relative;
+  overflow: hidden;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.student-id-watermark {
+  position: absolute;
+  right: -30px;
+  bottom: -30px;
+  font-size: 11rem;
+  color: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.student-id-avatar {
+  width: 90px;
+  height: 110px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  background: #cbd5e1;
+}
+
+.student-id-school {
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ================= FIREBASE STATUS BADGE ================= */
+.firebase-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.firebase-indicator.connected {
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+
+.firebase-indicator.demo {
+  background: #eff6ff;
+  color: #1e40af;
+  border-color: #bfdbfe;
+}
+
+.firebase-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ================= PRINT STYLES ================= */
+@media print {
+  .portal-sidebar,
+  .portal-header,
+  .btn-print-hide,
+  .floating-portal-btn,
+  .btn-back-to-top {
+    display: none !important;
+  }
+  .portal-main {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+  .portal-content {
+    padding: 0 !important;
+  }
+  .portal-card {
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ================= MOBILE RESPONSIVENESS ================= */
+@media (max-width: 991.98px) {
+  .portal-sidebar {
+    transform: translateX(-100%);
+  }
+  .portal-sidebar.show {
+    transform: translateX(0);
+  }
+  .portal-main {
+    margin-left: 0;
+  }
+  .portal-header-search {
+    display: none;
+  }
+}

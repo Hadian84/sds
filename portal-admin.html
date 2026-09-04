@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Administrator - SMP Negeri 1 Segah</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3.3 CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/portal.css">
+</head>
+<body class="portal-body">
+
+  <div class="portal-wrapper">
+    <!-- SIDEBAR -->
+    <aside class="portal-sidebar" id="portalSidebar">
+      <div class="portal-sidebar-brand">
+        <img src="logo.jpg" alt="Logo SMPN 1 Segah" class="portal-brand-logo">
+        <div class="portal-brand-text">
+          SMPN 1 SEGAH
+          <small>PANEL ADMINISTRATOR</small>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="nav-category">Navigasi Utama</div>
+        <a href="#sectionDashboard" class="sidebar-link active">
+          <i class="bi bi-grid-1x2-fill"></i> Dashboard Statistik
+        </a>
+        <a href="#sectionNews" class="sidebar-link">
+          <i class="bi bi-newspaper"></i> Manajemen Berita
+        </a>
+        <a href="#sectionAchievements" class="sidebar-link">
+          <i class="bi bi-trophy-fill"></i> Manajemen Prestasi
+        </a>
+
+        <div class="nav-category">Data Akademik & SDM</div>
+        <a href="#sectionTeachers" class="sidebar-link">
+          <i class="bi bi-person-video3"></i> Data Guru & Staf
+        </a>
+        <a href="#sectionStudents" class="sidebar-link">
+          <i class="bi bi-people-fill"></i> Data Siswa & Kelas
+        </a>
+        <a href="#sectionStudentAccounts" class="sidebar-link">
+          <i class="bi bi-key-fill text-warning"></i> Manajemen Akun Siswa
+        </a>
+
+        <div class="nav-category">Sistem & Basis Data</div>
+        <a href="#sectionFirebase" class="sidebar-link">
+          <i class="bi bi-fire text-danger"></i> Database Firebase Cloud
+        </a>
+        <a href="index.html" class="sidebar-link">
+          <i class="bi bi-globe2 text-info"></i> Lihat Website Publik
+        </a>
+      </div>
+
+      <div class="portal-sidebar-footer">
+        <div class="user-quick-profile mb-2">
+          <div class="user-quick-avatar">AD</div>
+          <div class="user-quick-info">
+            <div class="user-quick-name user-name-display">Admin Sekolah</div>
+            <div class="user-quick-role user-role-display">ADMINISTRATOR</div>
+          </div>
+        </div>
+        <button class="btn btn-sm btn-outline-danger w-100 mt-2 fw-semibold" onclick="Auth.logout()">
+          <i class="bi bi-box-arrow-right me-1"></i> Keluar (Logout)
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="portal-main">
+      <!-- HEADER -->
+      <header class="portal-header">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn-sidebar-toggle d-lg-none" id="btnToggleSidebar" title="Menu Sidebar">
+            <i class="bi bi-list"></i>
+          </button>
+          <div>
+            <h5 class="fw-bold mb-0 text-dark">Portal Administrator</h5>
+            <small class="text-muted">SMP Negeri 1 Segah • Kab. Berau</small>
+          </div>
+        </div>
+
+        <div class="portal-header-right">
+          <span class="firebase-status-badge firebase-indicator demo">
+            <span class="firebase-dot"></span> Firebase Status
+          </span>
+          <span class="badge-role badge-role-admin">ADMIN</span>
+          <button class="btn btn-sm btn-light border rounded-pill px-3" onclick="Auth.logout()">
+            <i class="bi bi-box-arrow-right me-1"></i> Keluar
+          </button>
+        </div>
+      </header>
+
+      <!-- BODY CONTENT -->
+      <main class="portal-content">
+        
+        <!-- DASHBOARD STATISTIK -->
+        <section id="sectionDashboard" class="mb-5">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h2 class="page-title">Dashboard & Ringkasan Data</h2>
+              <p class="page-subtitle">Statistik real-time peserta didik, dewan guru, publikasi berita, dan capaian prestasi sekolah.</p>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="refreshAdminDashboard()">
+              <i class="bi bi-arrow-clockwise me-1"></i> Segarkan Data
+            </button>
+          </div>
+
+          <!-- KPI CARDS -->
+          <div class="row g-3 mb-4">
+            <div class="col-xl-3 col-sm-6">
+              <div class="stat-card d-flex align-items-center gap-3">
+                <div class="stat-icon bg-primary-subtle text-primary">
+                  <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                  <div class="stat-value" id="statTotalSiswa">0</div>
+                  <div class="stat-label">Total Siswa Aktif</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+              <div class="stat-card d-flex align-items-center gap-3">
+                <div class="stat-icon bg-success-subtle text-success">
+                  <i class="bi bi-person-badge-fill"></i>
+                </div>
+                <div>
+                  <div class="stat-value" id="statTotalGuru">0</div>
+                  <div class="stat-label">Dewan Guru & Staf</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+              <div class="stat-card d-flex align-items-center gap-3">
+                <div class="stat-icon bg-info-subtle text-info">
+                  <i class="bi bi-newspaper"></i>
+                </div>
+                <div>
+                  <div class="stat-value" id="statTotalBerita">0</div>
+                  <div class="stat-label">Berita Diterbitkan</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+              <div class="stat-card d-flex align-items-center gap-3">
+                <div class="stat-icon bg-warning-subtle text-warning">
+                  <i class="bi bi-trophy-fill"></i>
+                </div>
+                <div>
+                  <div class="stat-value" id="statTotalPrestasi">0</div>
+                  <div class="stat-label">Penghargaan Juara</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CHARTS ROW (Chart.js) -->
+          <div class="row g-4 mb-4">
+            <div class="col-lg-5">
+              <div class="portal-card h-100">
+                <div class="portal-card-header">
+                  <h6 class="portal-card-title"><i class="bi bi-bar-chart-fill text-primary"></i> Siswa per Tingkat Kelas</h6>
+                </div>
+                <div class="portal-card-body" style="height: 280px;">
+                  <canvas id="chartSiswaPerTingkat"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="portal-card h-100">
+                <div class="portal-card-header">
+                  <h6 class="portal-card-title"><i class="bi bi-graph-up-arrow text-success"></i> Tren Prestasi (2023-2026)</h6>
+                </div>
+                <div class="portal-card-body" style="height: 280px;">
+                  <canvas id="chartPrestasiTahunan"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-3">
+              <div class="portal-card h-100">
+                <div class="portal-card-header">
+                  <h6 class="portal-card-title"><i class="bi bi-pie-chart-fill text-warning"></i> Kehadiran Sekolah</h6>
+                </div>
+                <div class="portal-card-body" style="height: 280px;">
+                  <canvas id="chartRasioKehadiran"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MANAJEMEN BERITA -->
+        <section id="sectionNews" class="mb-5">
+          <div class="portal-card">
+            <div class="portal-card-header">
+              <h6 class="portal-card-title">
+                <i class="bi bi-newspaper text-primary"></i> Manajemen Berita & Pengumuman Sekolah
+              </h6>
+              <button class="btn btn-sm btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#modalAddNews">
+                <i class="bi bi-plus-lg me-1"></i> Tambah Berita Baru
+              </button>
+            </div>
+            <div class="portal-card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-portal">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">No</th>
+                      <th>Judul Berita & Views</th>
+                      <th>Kategori</th>
+                      <th>Tanggal</th>
+                      <th>Penulis</th>
+                      <th style="width: 80px;">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminNewsTableBody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MANAJEMEN PRESTASI -->
+        <section id="sectionAchievements" class="mb-5">
+          <div class="portal-card">
+            <div class="portal-card-header">
+              <h6 class="portal-card-title">
+                <i class="bi bi-trophy-fill text-warning"></i> Manajemen Prestasi Siswa & Guru
+              </h6>
+              <button class="btn btn-sm btn-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalAddAch">
+                <i class="bi bi-plus-lg me-1"></i> Tambah Prestasi Baru
+              </button>
+            </div>
+            <div class="portal-card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-portal">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">No</th>
+                      <th>Nama Prestasi & Pemenang</th>
+                      <th>Kategori</th>
+                      <th>Tingkat</th>
+                      <th>Tahun</th>
+                      <th style="width: 80px;">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminAchTableBody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- DATA GURU -->
+        <section id="sectionTeachers" class="mb-5">
+          <div class="portal-card">
+            <div class="portal-card-header flex-wrap gap-2">
+              <h6 class="portal-card-title">
+                <i class="bi bi-person-video3 text-info"></i> Data Guru & Tenaga Kependidikan
+              </h6>
+              <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-sm btn-outline-success fw-semibold" onclick="downloadTeacherExcelTemplate()" title="Unduh Format Template Excel">
+                  <i class="bi bi-file-earmark-arrow-down me-1"></i> Format Excel
+                </button>
+                <button class="btn btn-sm btn-success fw-semibold" data-bs-toggle="modal" data-bs-target="#modalImportExcelTeacher">
+                  <i class="bi bi-file-earmark-excel me-1"></i> Import Excel
+                </button>
+                <button class="btn btn-sm btn-outline-primary fw-semibold" onclick="exportTeacherToExcel()" title="Ekspor Data Guru ke Excel">
+                  <i class="bi bi-download me-1"></i> Ekspor Excel
+                </button>
+                <button class="btn btn-sm btn-info text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalAddTeacher">
+                  <i class="bi bi-plus-lg me-1"></i> Tambah Guru
+                </button>
+              </div>
+            </div>
+            <div class="portal-card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-portal">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">No</th>
+                      <th>Nama & NIP</th>
+                      <th>Mata Pelajaran</th>
+                      <th>Jabatan / Tugas</th>
+                      <th>Kontak</th>
+                      <th style="width: 80px;">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminTeachersTableBody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- DATA SISWA -->
+        <section id="sectionStudents" class="mb-5">
+          <div class="portal-card">
+            <div class="portal-card-header flex-wrap gap-2">
+              <h6 class="portal-card-title">
+                <i class="bi bi-people-fill text-success"></i> Data Siswa & Rombel
+              </h6>
+              <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-sm btn-outline-success fw-semibold" onclick="downloadStudentExcelTemplate()" title="Unduh Format Template Excel">
+                  <i class="bi bi-file-earmark-arrow-down me-1"></i> Format Excel
+                </button>
+                <button class="btn btn-sm btn-success fw-semibold" data-bs-toggle="modal" data-bs-target="#modalImportExcelStudent">
+                  <i class="bi bi-file-earmark-excel me-1"></i> Import Excel
+                </button>
+                <button class="btn btn-sm btn-outline-primary fw-semibold" onclick="exportStudentToExcel()" title="Ekspor Data Siswa ke Excel">
+                  <i class="bi bi-download me-1"></i> Ekspor Excel
+                </button>
+                <button class="btn btn-sm btn-info text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalAddStudent">
+                  <i class="bi bi-plus-lg me-1"></i> Tambah Siswa
+                </button>
+              </div>
+            </div>
+            <!-- Filter & Pencarian Data Siswa -->
+            <div class="p-3 bg-light border-bottom">
+              <div class="row g-2 align-items-center">
+                <div class="col-md-5">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" id="searchAdminStudentInput" placeholder="Cari nama atau NISN siswa..." oninput="filterAdminStudentsTable()">
+                  </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                  <select class="form-select form-select-sm" id="filterAdminStudentClassSelect" onchange="filterAdminStudentsTable()">
+                    <option value="all">Semua Kelas (VII, VIII, IX • A s/d G)</option>
+                    <optgroup label="Kelas VII (Tingkat 7)">
+                      <option value="VII-A">Kelas VII-A</option>
+                      <option value="VII-B">Kelas VII-B</option>
+                      <option value="VII-C">Kelas VII-C</option>
+                      <option value="VII-D">Kelas VII-D</option>
+                      <option value="VII-E">Kelas VII-E</option>
+                      <option value="VII-F">Kelas VII-F</option>
+                      <option value="VII-G">Kelas VII-G</option>
+                    </optgroup>
+                    <optgroup label="Kelas VIII (Tingkat 8)">
+                      <option value="VIII-A">Kelas VIII-A</option>
+                      <option value="VIII-B">Kelas VIII-B</option>
+                      <option value="VIII-C">Kelas VIII-C</option>
+                      <option value="VIII-D">Kelas VIII-D</option>
+                      <option value="VIII-E">Kelas VIII-E</option>
+                      <option value="VIII-F">Kelas VIII-F</option>
+                      <option value="VIII-G">Kelas VIII-G</option>
+                    </optgroup>
+                    <optgroup label="Kelas IX (Tingkat 9)">
+                      <option value="IX-A">Kelas IX-A</option>
+                      <option value="IX-B">Kelas IX-B</option>
+                      <option value="IX-C">Kelas IX-C</option>
+                      <option value="IX-D">Kelas IX-D</option>
+                      <option value="IX-E">Kelas IX-E</option>
+                      <option value="IX-F">Kelas IX-F</option>
+                      <option value="IX-G">Kelas IX-G</option>
+                    </optgroup>
+                  </select>
+                </div>
+                <div class="col-md-3 col-sm-6 text-md-end text-muted small" id="summaryAdminStudentCount">
+                  Total: 0 Siswa Terdaftar
+                </div>
+              </div>
+            </div>
+
+            <div class="portal-card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-portal">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">No</th>
+                      <th>Nama & NISN</th>
+                      <th>Kelas</th>
+                      <th>Gender</th>
+                      <th>Kehadiran</th>
+                      <th>Nilai Rata-rata</th>
+                      <th style="width: 80px;">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminStudentsTableBody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MANAJEMEN AKUN & PASSWORD SISWA -->
+        <section id="sectionStudentAccounts" class="mb-5">
+          <div class="portal-card">
+            <div class="portal-card-header flex-wrap gap-2">
+              <div>
+                <h6 class="portal-card-title mb-1">
+                  <i class="bi bi-key-fill text-warning"></i> Manajemen Akun & Password Siswa
+                </h6>
+                <small class="text-muted">Kelola kredensial login portal, kata sandi, dan status akses peserta didik.</small>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-sm btn-outline-success fw-semibold" onclick="downloadStudentAccountExcelTemplate()" title="Unduh Format Template Excel Akun Siswa">
+                  <i class="bi bi-file-earmark-arrow-down me-1"></i> Format Excel
+                </button>
+                <button class="btn btn-sm btn-success fw-semibold" data-bs-toggle="modal" data-bs-target="#modalImportExcelStudentAccount" title="Import akun dan kata sandi dari berkas Excel">
+                  <i class="bi bi-file-earmark-excel me-1"></i> Import Excel
+                </button>
+                <button class="btn btn-sm btn-outline-primary fw-semibold" onclick="exportStudentAccountsToExcel()" title="Ekspor daftar username dan password siswa ke Excel">
+                  <i class="bi bi-download me-1"></i> Ekspor Excel
+                </button>
+                <button class="btn btn-sm btn-outline-warning text-dark fw-semibold" onclick="autoGenerateAllStudentAccounts()" title="Buat akun untuk semua siswa yang belum memiliki akun">
+                  <i class="bi bi-magic me-1"></i> Generate Otomatis
+                </button>
+                <button class="btn btn-sm btn-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalAddStudentAccount">
+                  <i class="bi bi-plus-lg me-1"></i> Buat Akun Baru
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter & Pencarian Bar -->
+            <div class="p-3 bg-light border-bottom">
+              <div class="row g-2 align-items-center">
+                <div class="col-md-4">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" id="searchStudentAccountInput" placeholder="Cari nama, NISN, atau username..." oninput="filterStudentAccountsTable()">
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <select class="form-select form-select-sm" id="filterClassAccountSelect" onchange="filterStudentAccountsTable()">
+                    <option value="all">Semua Kelas (A s/d G)</option>
+                    <optgroup label="Kelas VII">
+                      <option value="VII-A">Kelas VII-A</option>
+                      <option value="VII-B">Kelas VII-B</option>
+                      <option value="VII-C">Kelas VII-C</option>
+                      <option value="VII-D">Kelas VII-D</option>
+                      <option value="VII-E">Kelas VII-E</option>
+                      <option value="VII-F">Kelas VII-F</option>
+                      <option value="VII-G">Kelas VII-G</option>
+                    </optgroup>
+                    <optgroup label="Kelas VIII">
+                      <option value="VIII-A">Kelas VIII-A</option>
+                      <option value="VIII-B">Kelas VIII-B</option>
+                      <option value="VIII-C">Kelas VIII-C</option>
+                      <option value="VIII-D">Kelas VIII-D</option>
+                      <option value="VIII-E">Kelas VIII-E</option>
+                      <option value="VIII-F">Kelas VIII-F</option>
+                      <option value="VIII-G">Kelas VIII-G</option>
+                    </optgroup>
+                    <optgroup label="Kelas IX">
+                      <option value="IX-A">Kelas IX-A</option>
+                      <option value="IX-B">Kelas IX-B</option>
+                      <option value="IX-C">Kelas IX-C</option>
+                      <option value="IX-D">Kelas IX-D</option>
+                      <option value="IX-E">Kelas IX-E</option>
+                      <option value="IX-F">Kelas IX-F</option>
+                      <option value="IX-G">Kelas IX-G</option>
+                    </optgroup>
+                  </select>
+                </div>
+                <div class="col-md-2 col-6">
+                  <select class="form-select form-select-sm" id="filterStatusAccountSelect" onchange="filterStudentAccountsTable()">
+                    <option value="all">Semua Status</option>
+                    <option value="Aktif">Aktif</option>
+                    <option value="Nonaktif">Nonaktif</option>
+                  </select>
+                </div>
+                <div class="col-md-3 text-md-end">
+                  <button class="btn btn-sm btn-outline-secondary" id="btnToggleAllPasswords" onclick="toggleShowAllStudentPasswords()">
+                    <i class="bi bi-eye me-1"></i> Lihat Semua Password
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabel Akun Siswa -->
+            <div class="portal-card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-portal align-middle">
+                  <thead>
+                    <tr>
+                      <th style="width: 45px;">No</th>
+                      <th>Nama Siswa & NISN</th>
+                      <th>Kelas</th>
+                      <th>Username / Email Login</th>
+                      <th style="min-width: 170px;">Kata Sandi (Password)</th>
+                      <th>Status</th>
+                      <th>Login Terakhir</th>
+                      <th style="width: 130px;" class="text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminStudentAccountsTableBody">
+                    <!-- Dynamic Rows -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Footer Summary Info -->
+            <div class="p-3 bg-light border-top d-flex flex-column flex-sm-row justify-content-between align-items-sm-center small text-muted gap-2">
+              <div>
+                <i class="bi bi-info-circle text-primary me-1"></i> Siswa dapat login di <a href="login.html?role=siswa" target="_blank" class="fw-semibold">Portal Siswa</a> menggunakan <strong>NISN</strong> atau <strong>Email</strong> beserta kata sandinya.
+              </div>
+              <div id="summaryAccountCount" class="fw-bold text-dark">Total: 0 Akun Terdaftar</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PENGATURAN FIREBASE -->
+        <section id="sectionFirebase" class="mb-5">
+          <div class="portal-card border-primary">
+            <div class="portal-card-header bg-light">
+              <h6 class="portal-card-title text-primary">
+                <i class="bi bi-fire text-danger"></i> Integrasi Google Firebase Cloud & Sinkronisasi
+              </h6>
+              <span class="firebase-status-badge firebase-indicator demo">Status</span>
+            </div>
+            <div class="portal-card-body">
+              <div class="row gy-4">
+                <div class="col-lg-6">
+                  <h6 class="fw-bold mb-2 text-dark">Koneksi Database Firestore & Auth</h6>
+                  <p class="small text-muted mb-3 leading-relaxed">
+                    Sistem dapat berjalan langsung dengan data lokal realistis atau terhubung ke Cloud Firestore milik sekolah Anda. Untuk menghubungkan Firebase asli, masukkan konfigurasi proyek Anda di bawah ini:
+                  </p>
+                  <form id="formFirebaseConfig">
+                    <div class="mb-2">
+                      <label class="form-label small fw-bold">API Key (apiKey)</label>
+                      <input type="text" class="form-control form-control-sm" id="fbApiKey">
+                    </div>
+                    <div class="mb-2">
+                      <label class="form-label small fw-bold">Project ID (projectId)</label>
+                      <input type="text" class="form-control form-control-sm" id="fbProjectId">
+                    </div>
+                    <div class="mb-2">
+                      <label class="form-label small fw-bold">Auth Domain (authDomain)</label>
+                      <input type="text" class="form-control form-control-sm" id="fbAuthDomain">
+                    </div>
+                    <div class="mb-2">
+                      <label class="form-label small fw-bold">Storage Bucket</label>
+                      <input type="text" class="form-control form-control-sm" id="fbStorageBucket">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label small fw-bold">App ID</label>
+                      <input type="text" class="form-control form-control-sm" id="fbAppId">
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button type="submit" class="btn btn-primary btn-sm fw-bold">
+                        <i class="bi bi-save me-1"></i> Simpan Konfigurasi
+                      </button>
+                      <button type="button" class="btn btn-outline-secondary btn-sm" onclick="resetFirebaseConfig()">
+                        Reset ke Mode Demo
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="col-lg-6">
+                  <div class="p-4 bg-light rounded-3 border h-100 d-flex flex-column justify-content-between">
+                    <div>
+                      <h6 class="fw-bold text-dark mb-2"><i class="bi bi-cloud-arrow-up-fill text-primary me-2"></i>Sinkronisasi Seluruh Data ke Cloud</h6>
+                      <p class="small text-muted leading-relaxed">
+                        Jika Anda telah mengisi kredensial Firebase yang sah di sebelah kiri, klik tombol di bawah untuk mengunggah seluruh data sekolah (Berita, Prestasi, Guru, Siswa, Nilai, Presensi) ke Firestore dalam 1 batch transaksi.
+                      </p>
+                    </div>
+                    <div class="pt-3 border-top">
+                      <button type="button" class="btn btn-success w-100 py-2 fw-bold" id="btnSyncFirebase" onclick="syncToFirebaseCloud()">
+                        <i class="bi bi-cloud-upload me-1"></i> Sinkronkan ke Firebase
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAL TAMBAH BERITA -->
+  <div class="modal fade" id="modalAddNews" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold text-dark"><i class="bi bi-plus-circle me-2 text-primary"></i>Tambah Berita Baru</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="formAddNews">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Judul Berita / Pengumuman</label>
+              <input type="text" class="form-control" id="newsTitle" required placeholder="Contoh: SMPN 1 Segah Menjuarai Lomba Sains Berau 2026">
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Kategori</label>
+                <select class="form-select" id="newsCategory">
+                  <option value="Prestasi">Prestasi</option>
+                  <option value="Pengumuman">Pengumuman</option>
+                  <option value="Kegiatan">Kegiatan</option>
+                  <option value="Akademik">Akademik</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Penulis / Sumber</label>
+                <input type="text" class="form-control" id="newsAuthor" placeholder="Humas SMPN 1 Segah">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold">URL Gambar Sampul (Unsplash / Link Foto)</label>
+              <input type="url" class="form-control" id="newsImage" placeholder="https://images.unsplash.com/photo-...">
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Ringkasan Singkat (Excerpt)</label>
+              <textarea class="form-control" id="newsExcerpt" rows="2" placeholder="Ringkasan 1-2 kalimat untuk tampilan kartu..." required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Konten Lengkap Berita</label>
+              <textarea class="form-control" id="newsContent" rows="6" placeholder="Tuliskan isi berita secara lengkap di sini..." required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary fw-bold"><i class="bi bi-send me-1"></i> Terbitkan Berita</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL TAMBAH PRESTASI -->
+  <div class="modal fade" id="modalAddAch" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold text-dark"><i class="bi bi-trophy text-warning me-2"></i>Tambah Data Prestasi</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="formAddAch">
+          <div class="modal-body">
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Nama Prestasi / Perlombaan</label>
+              <input type="text" class="form-control form-control-sm" id="achTitle" required placeholder="Contoh: Juara 1 Olimpiade Matematika">
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-bold">Kategori</label>
+                <select class="form-select form-select-sm" id="achCategory">
+                  <option value="Akademik">Akademik</option>
+                  <option value="Olahraga">Olahraga</option>
+                  <option value="Seni & Budaya">Seni & Budaya</option>
+                  <option value="Pramuka">Pramuka</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold">Tingkat</label>
+                <select class="form-select form-select-sm" id="achLevel">
+                  <option value="Kabupaten">Kabupaten</option>
+                  <option value="Provinsi">Provinsi</option>
+                  <option value="Nasional">Nasional</option>
+                </select>
+              </div>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-bold">Peringkat / Juara</label>
+                <input type="text" class="form-control form-control-sm" id="achRank" required placeholder="Juara 1 / Medali Emas">
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold">Tahun</label>
+                <input type="number" class="form-control form-control-sm" id="achYear" value="2026" required>
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Nama Siswa / Tim Peraih</label>
+              <input type="text" class="form-control form-control-sm" id="achWinner" required placeholder="Muhammad Rizky, dkk">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">URL Foto Bukti / Piala (Opsional)</label>
+              <input type="url" class="form-control form-control-sm" id="achImage" placeholder="https://images.unsplash.com/...">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Keterangan Singkat</label>
+              <textarea class="form-control form-control-sm" id="achDesc" rows="2" placeholder="Catatan kejuaraan..."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-warning btn-sm text-dark fw-bold">Simpan Prestasi</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL TAMBAH GURU -->
+  <div class="modal fade" id="modalAddTeacher" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold text-dark"><i class="bi bi-person-plus text-info me-2"></i>Tambah Data Guru</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="formAddTeacher">
+          <div class="modal-body">
+            <div class="mb-2">
+              <label class="form-label small fw-bold">NIP Guru</label>
+              <input type="text" class="form-control form-control-sm" id="teacherNip" placeholder="19830514 200801 1 009" required>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Nama Lengkap & Gelar</label>
+              <input type="text" class="form-control form-control-sm" id="teacherName" placeholder="Bambang Sutrisno, S.Pd" required>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-bold">Mata Pelajaran</label>
+                <input type="text" class="form-control form-control-sm" id="teacherSubject" placeholder="Matematika" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold">Jabatan Tambahan</label>
+                <input type="text" class="form-control form-control-sm" id="teacherRole" placeholder="Waka Kurikulum / Wali Kelas">
+              </div>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-bold">Email</label>
+                <input type="email" class="form-control form-control-sm" id="teacherEmail" placeholder="guru@smpn1segah.sch.id">
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold">Nomor HP</label>
+                <input type="text" class="form-control form-control-sm" id="teacherPhone" placeholder="0813-xxxx-xxxx">
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Pendidikan Terakhir</label>
+              <input type="text" class="form-control form-control-sm" id="teacherEdu" placeholder="S1 Pendidikan Matematika">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">URL Foto Profil</label>
+              <input type="url" class="form-control form-control-sm" id="teacherPhoto" placeholder="https://images.unsplash.com/...">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-info btn-sm text-dark fw-bold">Simpan Guru</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL TAMBAH SISWA -->
+  <div class="modal fade" id="modalAddStudent" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold text-dark"><i class="bi bi-person-plus text-success me-2"></i>Tambah Data Siswa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="formAddStudent">
+          <div class="modal-body">
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-bold">NISN</label>
+                <input type="text" class="form-control form-control-sm" id="stdNisn" placeholder="0098765432" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold">Kelas</label>
+                <select class="form-select form-select-sm" id="stdClass">
+                  <optgroup label="Kelas VII (Tingkat 7)">
+                    <option value="VII-A">VII-A</option>
+                    <option value="VII-B">VII-B</option>
+                    <option value="VII-C">VII-C</option>
+                    <option value="VII-D">VII-D</option>
+                    <option value="VII-E">VII-E</option>
+                    <option value="VII-F">VII-F</option>
+                    <option value="VII-G">VII-G</option>
+                  </optgroup>
+                  <optgroup label="Kelas VIII (Tingkat 8)">
+                    <option value="VIII-A">VIII-A</option>
+                    <option value="VIII-B">VIII-B</option>
+                    <option value="VIII-C">VIII-C</option>
+                    <option value="VIII-D">VIII-D</option>
+                    <option value="VIII-E">VIII-E</option>
+                    <option value="VIII-F">VIII-F</option>
+                    <option value="VIII-G">VIII-G</option>
+                  </optgroup>
+                  <optgroup label="Kelas IX (Tingkat 9)">
+                    <option value="IX-A">IX-A</option>
+                    <option value="IX-B">IX-B</option>
+                    <option value="IX-C">IX-C</option>
+                    <option value="IX-D">IX-D</option>
+                    <option value="IX-E">IX-E</option>
+                    <option value="IX-F">IX-F</option>
+                    <option value="IX-G">IX-G</option>
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Nama Lengkap Siswa</label>
+              <input type="text" class="form-control form-control-sm" id="stdName" required placeholder="Nama Siswa">
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-bold">Jenis Kelamin</label>
+                <select class="form-select form-select-sm" id="stdGender">
+                  <option value="Laki-laki">Laki-laki</option>
+                  <option value="Perempuan">Perempuan</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold">Email</label>
+                <input type="email" class="form-control form-control-sm" id="stdEmail" placeholder="siswa@smpn1segah.sch.id">
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Nomor HP / WA</label>
+              <input type="text" class="form-control form-control-sm" id="stdPhone" placeholder="0821-xxxx-xxxx">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Alamat Rumah</label>
+              <textarea class="form-control form-control-sm" id="stdAddress" rows="2" placeholder="Jl. Poros Segah RT 03..."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-success btn-sm fw-bold">Simpan Siswa</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL IMPORT EXCEL GURU -->
+  <div class="modal fade" id="modalImportExcelTeacher" tabindex="-1" aria-labelledby="modalImportExcelTeacherTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title fw-bold" id="modalImportExcelTeacherTitle">
+            <i class="bi bi-file-earmark-excel-fill me-2"></i> Import Data Guru & Staf dari Excel
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <!-- Petunjuk & Tombol Template -->
+          <div class="alert alert-light border border-success border-opacity-25 rounded-3 mb-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+              <div>
+                <h6 class="fw-bold text-success mb-1"><i class="bi bi-info-circle-fill me-1"></i> Petunjuk Format File Excel</h6>
+                <p class="small text-muted mb-0">
+                  Gunakan kolom standar: <strong>NIP, Nama, Mapel, Jabatan, Email, No HP, Pendidikan</strong>.<br>
+                  Mendukung berkas berekstensi <code>.xlsx</code>, <code>.xls</code>, atau <code>.csv</code>.
+                </p>
+              </div>
+              <button type="button" class="btn btn-outline-success btn-sm fw-bold text-nowrap" onclick="downloadTeacherExcelTemplate()">
+                <i class="bi bi-download me-1"></i> Unduh Format (.xlsx)
+              </button>
+            </div>
+          </div>
+
+          <!-- Area Upload Drag & Drop -->
+          <div class="border-2 border-dashed border-secondary border-opacity-25 rounded-3 p-4 text-center mb-4 bg-light" id="dropZoneExcelTeacher" style="cursor: pointer;">
+            <i class="bi bi-cloud-arrow-up-fill text-success" style="font-size: 3rem;"></i>
+            <h6 class="fw-bold mt-2 mb-1">Pilih atau Tarik Berkas Excel ke Sini</h6>
+            <p class="small text-muted mb-3">Format .xlsx, .xls, atau .csv (Maksimal 10 MB)</p>
+            <input type="file" id="inputExcelTeacherFile" class="d-none" accept=".xlsx, .xls, .csv">
+            <button type="button" class="btn btn-success btn-sm px-4 fw-bold" onclick="document.getElementById('inputExcelTeacherFile').click()">
+              <i class="bi bi-folder2-open me-1"></i> Pilih Berkas dari Komputer
+            </button>
+            <div id="selectedTeacherFileName" class="mt-2 small fw-bold text-primary"></div>
+          </div>
+
+          <!-- Pilihan Metode Import -->
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-dark mb-2">Metode Penyimpanan Data:</label>
+            <div class="row g-2">
+              <div class="col-sm-6">
+                <div class="form-check border p-2 rounded ps-4 bg-light">
+                  <input class="form-check-input" type="radio" name="importTeacherMode" id="modeAppendTeacher" value="append" checked>
+                  <label class="form-check-label small fw-semibold" for="modeAppendTeacher">
+                    Tambahkan ke data yang ada (Append)
+                    <small class="d-block text-muted">Guru lama tetap tersimpan, data baru ditambahkan.</small>
+                  </label>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-check border p-2 rounded ps-4 bg-light">
+                  <input class="form-check-input" type="radio" name="importTeacherMode" id="modeReplaceTeacher" value="replace">
+                  <label class="form-check-label small fw-semibold text-danger" for="modeReplaceTeacher">
+                    Gantikan seluruh data guru (Replace All)
+                    <small class="d-block text-muted">Seluruh guru lama digantikan dengan data baru di Excel.</small>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pratinjau Tabel Excel yang Dibaca -->
+          <div id="previewExcelTeacherArea" class="d-none">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-eye-fill text-primary me-1"></i> Pratinjau Data yang Terbaca:
+              </h6>
+              <span id="badgeCountTeacherPreview" class="badge bg-success">0 Baris Data Ditemukan</span>
+            </div>
+            <div class="table-responsive border rounded" style="max-height: 250px; overflow-y: auto;">
+              <table class="table table-sm table-striped table-hover mb-0" style="font-size: 0.8rem;">
+                <thead class="table-dark sticky-top">
+                  <tr>
+                    <th>No</th>
+                    <th>NIP</th>
+                    <th>Nama Lengkap</th>
+                    <th>Mata Pelajaran</th>
+                    <th>Jabatan</th>
+                    <th>Email</th>
+                    <th>No HP</th>
+                    <th>Pendidikan</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyPreviewExcelTeacher">
+                  <!-- Dynamic preview rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Tutup</button>
+          <button type="button" class="btn btn-success btn-sm px-4 fw-bold" id="btnExecuteImportTeacher" disabled onclick="executeTeacherImport()">
+            <i class="bi bi-check-circle-fill me-1"></i> Proses & Simpan ke Database
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL IMPORT EXCEL SISWA -->
+  <div class="modal fade" id="modalImportExcelStudent" tabindex="-1" aria-labelledby="modalImportExcelStudentTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title fw-bold" id="modalImportExcelStudentTitle">
+            <i class="bi bi-file-earmark-excel-fill me-2"></i> Import Data Siswa dari Excel
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <!-- Petunjuk & Tombol Template -->
+          <div class="alert alert-light border border-primary border-opacity-25 rounded-3 mb-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+              <div>
+                <h6 class="fw-bold text-primary mb-1"><i class="bi bi-info-circle-fill me-1"></i> Petunjuk Format File Excel Siswa</h6>
+                <p class="small text-muted mb-0">
+                  Gunakan kolom standar: <strong>NISN, Nama, Kelas, Jenis Kelamin, Email, No HP, Alamat, TTL, Nama Orang Tua</strong>.<br>
+                  Format kelas: <code>VII-A</code> s/d <code>VII-G</code>, <code>VIII-A</code> s/d <code>VIII-G</code>, <code>IX-A</code> s/d <code>IX-G</code>.
+                </p>
+              </div>
+              <button type="button" class="btn btn-outline-primary btn-sm fw-bold text-nowrap" onclick="downloadStudentExcelTemplate()">
+                <i class="bi bi-download me-1"></i> Unduh Format (.xlsx)
+              </button>
+            </div>
+          </div>
+
+          <!-- Area Upload Drag & Drop -->
+          <div class="border-2 border-dashed border-secondary border-opacity-25 rounded-3 p-4 text-center mb-4 bg-light" id="dropZoneExcelStudent" style="cursor: pointer;">
+            <i class="bi bi-cloud-arrow-up-fill text-primary" style="font-size: 3rem;"></i>
+            <h6 class="fw-bold mt-2 mb-1">Pilih atau Tarik Berkas Excel Siswa ke Sini</h6>
+            <p class="small text-muted mb-3">Format .xlsx, .xls, atau .csv (Maksimal 10 MB)</p>
+            <input type="file" id="inputExcelStudentFile" class="d-none" accept=".xlsx, .xls, .csv">
+            <button type="button" class="btn btn-primary btn-sm px-4 fw-bold" onclick="document.getElementById('inputExcelStudentFile').click()">
+              <i class="bi bi-folder2-open me-1"></i> Pilih Berkas dari Komputer
+            </button>
+            <div id="selectedStudentFileName" class="mt-2 small fw-bold text-success"></div>
+          </div>
+
+          <!-- Pilihan Metode Import -->
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-dark mb-2">Metode Penyimpanan Data:</label>
+            <div class="row g-2">
+              <div class="col-sm-6">
+                <div class="form-check border p-2 rounded ps-4 bg-light">
+                  <input class="form-check-input" type="radio" name="importStudentMode" id="modeAppendStudent" value="append" checked>
+                  <label class="form-check-label small fw-semibold" for="modeAppendStudent">
+                    Tambahkan ke data yang ada (Append)
+                    <small class="d-block text-muted">Siswa lama tetap tersimpan, data baru ditambahkan.</small>
+                  </label>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-check border p-2 rounded ps-4 bg-light">
+                  <input class="form-check-input" type="radio" name="importStudentMode" id="modeReplaceStudent" value="replace">
+                  <label class="form-check-label small fw-semibold text-danger" for="modeReplaceStudent">
+                    Gantikan seluruh data siswa (Replace All)
+                    <small class="d-block text-muted">Seluruh data siswa lama digantikan dengan data baru di Excel.</small>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pratinjau Tabel Excel yang Dibaca -->
+          <div id="previewExcelStudentArea" class="d-none">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-eye-fill text-primary me-1"></i> Pratinjau Data Siswa yang Terbaca:
+              </h6>
+              <span id="badgeCountStudentPreview" class="badge bg-primary">0 Siswa Ditemukan</span>
+            </div>
+            <div class="table-responsive border rounded" style="max-height: 250px; overflow-y: auto;">
+              <table class="table table-sm table-striped table-hover mb-0" style="font-size: 0.8rem;">
+                <thead class="table-dark sticky-top">
+                  <tr>
+                    <th>No</th>
+                    <th>NISN</th>
+                    <th>Nama Siswa</th>
+                    <th>Kelas</th>
+                    <th>Jenis Kelamin</th>
+                    <th>No HP / WA</th>
+                    <th>Nama Orang Tua</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyPreviewExcelStudent">
+                  <!-- Dynamic preview rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Tutup</button>
+          <button type="button" class="btn btn-primary btn-sm px-4 fw-bold" id="btnExecuteImportStudent" disabled onclick="executeStudentImport()">
+            <i class="bi bi-check-circle-fill me-1"></i> Proses & Simpan ke Database
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL IMPORT EXCEL AKUN SISWA -->
+  <div class="modal fade" id="modalImportExcelStudentAccount" tabindex="-1" aria-labelledby="modalImportExcelStudentAccountTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title fw-bold" id="modalImportExcelStudentAccountTitle">
+            <i class="bi bi-file-earmark-excel-fill me-2"></i> Import Akun & Password Siswa dari Excel
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <!-- Petunjuk & Tombol Template -->
+          <div class="alert alert-light border border-warning border-opacity-50 rounded-3 mb-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+              <div>
+                <h6 class="fw-bold text-dark mb-1"><i class="bi bi-info-circle-fill text-warning me-1"></i> Petunjuk Format File Excel Akun Siswa</h6>
+                <p class="small text-muted mb-0">
+                  Gunakan kolom standar: <strong>NISN, Nama Siswa, Kelas, Username, Email, Password, Status</strong>.<br>
+                  Password default jika kosong adalah <code>siswa123</code>. Status dapat diisi <code>Aktif</code> atau <code>Nonaktif</code>.
+                </p>
+              </div>
+              <button type="button" class="btn btn-outline-dark btn-sm fw-bold text-nowrap" onclick="downloadStudentAccountExcelTemplate()">
+                <i class="bi bi-download me-1"></i> Unduh Format (.xlsx)
+              </button>
+            </div>
+          </div>
+
+          <!-- Area Upload Drag & Drop -->
+          <div class="border-2 border-dashed border-warning border-opacity-50 rounded-3 p-4 text-center mb-4 bg-light" id="dropZoneExcelStudentAccount" style="cursor: pointer;">
+            <i class="bi bi-cloud-arrow-up-fill text-warning" style="font-size: 3rem;"></i>
+            <h6 class="fw-bold mt-2 mb-1">Pilih atau Tarik Berkas Excel Akun Siswa ke Sini</h6>
+            <p class="small text-muted mb-3">Format .xlsx, .xls, atau .csv (Maksimal 10 MB)</p>
+            <input type="file" id="inputExcelStudentAccountFile" class="d-none" accept=".xlsx, .xls, .csv">
+            <button type="button" class="btn btn-warning btn-sm text-dark px-4 fw-bold" onclick="document.getElementById('inputExcelStudentAccountFile').click()">
+              <i class="bi bi-folder2-open me-1"></i> Pilih Berkas dari Komputer
+            </button>
+            <div id="selectedStudentAccountFileName" class="mt-2 small fw-bold text-success"></div>
+          </div>
+
+          <!-- Pilihan Metode Import -->
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-dark mb-2">Metode Penyimpanan Akun:</label>
+            <div class="row g-2">
+              <div class="col-sm-6">
+                <div class="form-check border p-2 rounded ps-4 bg-light">
+                  <input class="form-check-input" type="radio" name="importStudentAccountMode" id="modeAppendStudentAccount" value="append" checked>
+                  <label class="form-check-label small fw-semibold" for="modeAppendStudentAccount">
+                    Tambahkan & Perbarui (Append / Update)
+                    <small class="d-block text-muted">Akun baru ditambahkan, dan akun dengan NISN yang sama akan diperbarui passwordnya.</small>
+                  </label>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-check border p-2 rounded ps-4 bg-light">
+                  <input class="form-check-input" type="radio" name="importStudentAccountMode" id="modeReplaceStudentAccount" value="replace">
+                  <label class="form-check-label small fw-semibold text-danger" for="modeReplaceStudentAccount">
+                    Gantikan seluruh akun siswa (Replace All)
+                    <small class="d-block text-muted">Seluruh akun siswa lama digantikan dengan daftar akun yang ada di Excel.</small>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pratinjau Tabel Excel yang Dibaca -->
+          <div id="previewExcelStudentAccountArea" class="d-none">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-eye-fill text-warning me-1"></i> Pratinjau Akun Siswa yang Terbaca:
+              </h6>
+              <span id="badgeCountStudentAccountPreview" class="badge bg-warning text-dark">0 Akun Ditemukan</span>
+            </div>
+            <div class="table-responsive border rounded" style="max-height: 250px; overflow-y: auto;">
+              <table class="table table-sm table-striped table-hover mb-0" style="font-size: 0.8rem;">
+                <thead class="table-dark sticky-top">
+                  <tr>
+                    <th>No</th>
+                    <th>NISN</th>
+                    <th>Nama Siswa</th>
+                    <th>Kelas</th>
+                    <th>Username</th>
+                    <th>Email Login</th>
+                    <th>Kata Sandi</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyPreviewExcelStudentAccount">
+                  <!-- Dynamic preview rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Tutup</button>
+          <button type="button" class="btn btn-warning btn-sm text-dark px-4 fw-bold" id="btnExecuteImportStudentAccount" disabled onclick="executeStudentAccountImport()">
+            <i class="bi bi-check-circle-fill me-1"></i> Proses & Simpan Akun ke Database
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL BUAT AKUN SISWA BARU -->
+  <div class="modal fade" id="modalAddStudentAccount" tabindex="-1" aria-labelledby="modalAddStudentAccountTitle" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title fw-bold" id="modalAddStudentAccountTitle">
+            <i class="bi bi-person-plus-fill me-2"></i> Buat Kredensial Akun Siswa
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="formAddStudentAccount">
+          <div class="modal-body">
+            <!-- Pilih Siswa Terdaftar -->
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Pilih Siswa dari Database</label>
+              <select class="form-select form-select-sm" id="selectExistingStudentForAccount" onchange="fillStudentAccountFormFromSelect(this.value)">
+                <option value="">-- Pilih Siswa atau Isi Manual --</option>
+                <!-- Populated dynamically via JS -->
+              </select>
+            </div>
+
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-bold">NISN Siswa</label>
+                <input type="text" class="form-control form-control-sm" id="accStdNisn" placeholder="0098xxxxxx" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold">Kelas</label>
+                <select class="form-select form-select-sm" id="accStdClass">
+                  <optgroup label="Kelas VII (Tingkat 7)">
+                    <option value="VII-A">VII-A</option>
+                    <option value="VII-B">VII-B</option>
+                    <option value="VII-C">VII-C</option>
+                    <option value="VII-D">VII-D</option>
+                    <option value="VII-E">VII-E</option>
+                    <option value="VII-F">VII-F</option>
+                    <option value="VII-G">VII-G</option>
+                  </optgroup>
+                  <optgroup label="Kelas VIII (Tingkat 8)">
+                    <option value="VIII-A">VIII-A</option>
+                    <option value="VIII-B">VIII-B</option>
+                    <option value="VIII-C">VIII-C</option>
+                    <option value="VIII-D">VIII-D</option>
+                    <option value="VIII-E">VIII-E</option>
+                    <option value="VIII-F">VIII-F</option>
+                    <option value="VIII-G">VIII-G</option>
+                  </optgroup>
+                  <optgroup label="Kelas IX (Tingkat 9)">
+                    <option value="IX-A">IX-A</option>
+                    <option value="IX-B">IX-B</option>
+                    <option value="IX-C">IX-C</option>
+                    <option value="IX-D">IX-D</option>
+                    <option value="IX-E">IX-E</option>
+                    <option value="IX-F">IX-F</option>
+                    <option value="IX-G">IX-G</option>
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Nama Lengkap Siswa</label>
+              <input type="text" class="form-control form-control-sm" id="accStdName" placeholder="Nama Siswa" required>
+            </div>
+
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-bold">Username Login</label>
+                <input type="text" class="form-control form-control-sm" id="accStdUsername" placeholder="Username (NISN)" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold">Email Login</label>
+                <input type="email" class="form-control form-control-sm" id="accStdEmail" placeholder="siswa@smpn1segah.sch.id">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Kata Sandi (Password)</label>
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" id="accStdPassword" value="siswa123" required>
+                <button type="button" class="btn btn-outline-secondary" onclick="generateRandomPassword('accStdPassword')">
+                  <i class="bi bi-shuffle me-1"></i> Acak
+                </button>
+              </div>
+              <small class="text-muted" style="font-size: 0.75rem;">Password default: <code>siswa123</code></small>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Status Akses Akun</label>
+              <select class="form-select form-select-sm" id="accStdStatus">
+                <option value="Aktif" selected>Aktif (Dapat Login)</option>
+                <option value="Nonaktif">Nonaktif (Akses Diblokir)</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-warning btn-sm text-dark fw-bold">
+              <i class="bi bi-check-circle-fill me-1"></i> Simpan Akun Siswa
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL EDIT PASSWORD SISWA -->
+  <div class="modal fade" id="modalEditStudentPassword" tabindex="-1" aria-labelledby="modalEditStudentPasswordTitle" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title fw-bold" id="modalEditStudentPasswordTitle">
+            <i class="bi bi-key-fill text-warning me-2"></i> Ubah Password Siswa
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="formEditStudentPassword">
+          <input type="hidden" id="editPasswordAccountId">
+          <div class="modal-body">
+            <div class="p-3 bg-light rounded-3 mb-3 border">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <strong class="text-dark" id="editPasswordStudentName">Nama Siswa</strong>
+                <span class="badge bg-primary" id="editPasswordStudentClass">Kelas</span>
+              </div>
+              <div class="small text-muted">
+                NISN: <code id="editPasswordStudentNisn">0098xxxxxx</code> • Username: <code id="editPasswordStudentUsername">user</code>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-dark">Kata Sandi Baru</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="inputNewStudentPassword" required placeholder="Masukkan password baru">
+                <button type="button" class="btn btn-outline-secondary" onclick="generateRandomPassword('inputNewStudentPassword')" title="Buat password acak">
+                  <i class="bi bi-shuffle me-1"></i> Acak
+                </button>
+                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('inputNewStudentPassword').value='siswa123'" title="Reset ke default">
+                  Default
+                </button>
+              </div>
+              <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
+                Siswa dapat langsung login dengan kata sandi baru ini.
+              </small>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary btn-sm fw-bold">
+              <i class="bi bi-save me-1"></i> Simpan Password Baru
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIREBASE SDK COMPAT (CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <!-- BOOTSTRAP 5.3.3 BUNDLE JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- CHART.JS 4.4.x (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+  <!-- SHEETJS (XLSX) FOR EXCEL IMPORT/EXPORT -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- APP SCRIPTS -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/portal-admin.js"></script>
+
+  <script>
+    // Sidebar toggle for mobile
+    document.getElementById('btnToggleSidebar')?.addEventListener('click', () => {
+      document.getElementById('portalSidebar')?.classList.toggle('show');
+    });
+  </script>
+</body>
+</html>
